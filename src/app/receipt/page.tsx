@@ -104,9 +104,12 @@ export default function ReceiptPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [logoUrls, setLogoUrls] = useState<Record<Brand, string>>({
-    mcdonalds: "/logos/mcdonalds-2.0.0-1771010910053.png",
-    starbucks: "/logos/starbucks-smart-logo.webp",
-    luckin: "/logos/luckin-smart-logo.webp",
+    mcdonalds:
+      "https://projects-omega-self.vercel.app/logos/mcdonalds-2.0.0-1771010910053.png",
+    starbucks:
+      "https://projects-omega-self.vercel.app/logos/starbucks-smart-logo.webp",
+    luckin:
+      "https://projects-omega-self.vercel.app/logos/luckin-smart-logo.webp",
   });
   const [isRefreshingLogo, setIsRefreshingLogo] = useState(false);
 
@@ -164,14 +167,16 @@ export default function ReceiptPage() {
     }
   };
 
-  // 移除外部URL依赖，直接使用本地路径
-  // 初始化时设置本地路径
+  // 初始化时设置绝对路径
   useEffect(() => {
-    // 确保logoUrls始终使用本地路径
+    // 确保logoUrls始终使用绝对路径
     setLogoUrls({
-      mcdonalds: "/logos/mcdonalds-2.0.0-1771010910053.png",
-      starbucks: "/logos/starbucks-smart-logo.webp",
-      luckin: "/logos/luckin-smart-logo.webp",
+      mcdonalds:
+        "https://projects-omega-self.vercel.app/logos/mcdonalds-2.0.0-1771010910053.png",
+      starbucks:
+        "https://projects-omega-self.vercel.app/logos/starbucks-smart-logo.webp",
+      luckin:
+        "https://projects-omega-self.vercel.app/logos/luckin-smart-logo.webp",
     });
   }, []);
 
@@ -226,7 +231,7 @@ export default function ReceiptPage() {
           transformOrigin: "top left",
         },
         // 确保图片正确加载
-        pixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio : 1,
+        pixelRatio: typeof window !== "undefined" ? window.devicePixelRatio : 1,
         cacheBust: true,
         skipFonts: false,
       });
