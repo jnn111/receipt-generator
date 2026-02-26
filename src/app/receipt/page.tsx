@@ -110,6 +110,13 @@ export default function ReceiptPage() {
   });
   const [isRefreshingLogo, setIsRefreshingLogo] = useState(false);
 
+  // 当品牌切换时，自动重新生成小票
+  useEffect(() => {
+    if (receiptData && formData.date && formData.recipient) {
+      generateReceipt();
+    }
+  }, [selectedBrand]);
+
   // 上传自定义Logo
   const handleLogoUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
