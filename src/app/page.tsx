@@ -1,10 +1,16 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Receipt, Sparkles, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Receipt, Sparkles, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Home() {
   return (
@@ -191,11 +197,15 @@ export default function Home() {
       <footer className="py-8 px-4 border-t border-slate-200 dark:border-slate-800">
         <div className="container mx-auto max-w-5xl text-center">
           <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">
-            © 2024 AI 小票生成器. Powered by AI.
+            © 2026 AI 小票生成器. Powered by Jnn.
           </p>
           <div className="flex items-center justify-center gap-4">
             <Link href="/logos">
-              <Button variant="ghost" size="sm" className="text-slate-600 dark:text-slate-400">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-slate-600 dark:text-slate-400"
+              >
                 Logo 管理
               </Button>
             </Link>
