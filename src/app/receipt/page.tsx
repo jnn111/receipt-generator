@@ -110,11 +110,9 @@ export default function ReceiptPage() {
   });
   const [isRefreshingLogo, setIsRefreshingLogo] = useState(false);
 
-  // 当品牌切换时，自动重新生成小票
+  // 当品牌切换时，清除当前小票数据，让用户重新生成
   useEffect(() => {
-    if (receiptData && formData.date && formData.recipient) {
-      generateReceipt();
-    }
+    setReceiptData(null);
   }, [selectedBrand]);
 
   // 上传自定义Logo
