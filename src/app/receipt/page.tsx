@@ -104,12 +104,9 @@ export default function ReceiptPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [logoUrls, setLogoUrls] = useState<Record<Brand, string>>({
-    mcdonalds:
-      "https://projects-omega-self.vercel.app/logos/mcdonalds-2.0.0-1771010910053.png",
-    starbucks:
-      "https://projects-omega-self.vercel.app/logos/starbucks-smart-logo.webp",
-    luckin:
-      "https://projects-omega-self.vercel.app/logos/luckin-smart-logo.webp",
+    mcdonalds: "/logos/mcdonalds-2.0.0-1771010910053.png",
+    starbucks: "/logos/starbucks-smart-logo.webp",
+    luckin: "/logos/luckin-smart-logo.webp",
   });
   const [isRefreshingLogo, setIsRefreshingLogo] = useState(false);
 
@@ -167,16 +164,13 @@ export default function ReceiptPage() {
     }
   };
 
-  // 初始化时设置绝对路径
+  // 初始化时设置本地路径
   useEffect(() => {
-    // 确保logoUrls始终使用绝对路径
+    // 确保logoUrls始终使用本地路径
     setLogoUrls({
-      mcdonalds:
-        "https://projects-omega-self.vercel.app/logos/mcdonalds-2.0.0-1771010910053.png",
-      starbucks:
-        "https://projects-omega-self.vercel.app/logos/starbucks-smart-logo.webp",
-      luckin:
-        "https://projects-omega-self.vercel.app/logos/luckin-smart-logo.webp",
+      mcdonalds: "/logos/mcdonalds-2.0.0-1771010910053.png",
+      starbucks: "/logos/starbucks-smart-logo.webp",
+      luckin: "/logos/luckin-smart-logo.webp",
     });
   }, []);
 
@@ -223,6 +217,17 @@ export default function ReceiptPage() {
     setIsDownloading(true);
 
     try {
+      // 临时替换图片路径为绝对路径
+      const logoElements = receiptRef.current.querySelectorAll("img");
+      const originalSrcs: string[] = [];
+
+      logoElements.forEach((img, index) => {
+        originalSrcs[index] = img.src;
+        if (img.src.startsWith("/")) {
+          img.src = `https://projects-omega-self.vercel.app${img.src}`;
+        }
+      });
+
       const dataUrl = await toPng(receiptRef.current, {
         quality: 1.0,
         backgroundColor: "#ffffff",
@@ -234,6 +239,11 @@ export default function ReceiptPage() {
         pixelRatio: typeof window !== "undefined" ? window.devicePixelRatio : 1,
         cacheBust: true,
         skipFonts: false,
+      });
+
+      // 恢复原始图片路径
+      logoElements.forEach((img, index) => {
+        img.src = originalSrcs[index];
       });
 
       const a = document.createElement("a");
