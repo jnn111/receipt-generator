@@ -3,7 +3,15 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { date, recipient, brand, loveMessage } = body;
+    const {
+      date,
+      recipient,
+      brand,
+      loveMessage,
+      backgroundImage,
+      leftImage,
+      rightImage,
+    } = body;
 
     // 提取日期数字（月+日）
     const dateObj = new Date(date);
@@ -31,8 +39,7 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
 3. products: 商品列表，包含3-4个创意商品，每个商品有name和quantity，商品名称要基于爱意文案的关键词创造
 4. payment: 实付金额（创意文案，如"无价"），结合爱意文案的情感
 5. discounts: 优惠列表，2-3条优惠信息，优惠内容要基于爱意文案的主题创造温馨的祝福语
-6. deliveryPerson: 配送人，名称要温馨，结合爱意文案的情感
-7. deliveryAddress: 配送地址，地址描述要浪漫，结合爱意文案的主题
+
 8. userNote: 用户备注，内容要温暖，基于爱意文案创造幸福的祝福语
 
 重要要求：
@@ -57,15 +64,12 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
   ],
   "payment": "...",
   "discounts": ["...", "..."],
-  "deliveryPerson": "...",
-  "deliveryAddress": "...",
+
   "userNote": "..."
 }
 
 只返回JSON，不要有其他内容。
 `;
-
-    let generatedContent;
 
     // 生成当前日期字符串 (YYYY.MM.DD)
     const currentDate = `${dateObj.getFullYear()}.${(dateObj.getMonth() + 1).toString().padStart(2, "0")}.${dateObj.getDate().toString().padStart(2, "0")}`;
@@ -106,16 +110,12 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
             { name: "永恒的幸福", quantity: "无限加倍" },
             { name: "快乐时光", quantity: "永久" },
           ],
+          payment: "无价",
           discounts: [
             keywords ? `折扣: ${keywords}专属优惠` : "折扣: 对你的爱不打折",
             "折扣: 真爱无价",
             "折扣: 爱加倍",
-            "折扣: 幸福永久",
-            "折扣: 快乐无限",
-            "折扣: 甜蜜时光",
           ],
-          deliveryPerson: `${recipientName}专属配送服务`,
-          deliveryAddress: "我们爱的小屋",
           userNote: keywords
             ? `${keywords}快乐！麦当当与你一起分享每一个美好时刻~`
             : "满意请给好评，记得五星哦~",
@@ -136,6 +136,7 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
             },
             { name: "幸福味道", quantity: "永久" },
           ],
+          payment: "无价",
           discounts: [
             keywords ? `折扣: ${keywords}专属优惠` : "折扣: 爱意不打折",
             "折扣: 温暖无限",
@@ -144,8 +145,6 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
             "折扣: 温馨时光",
             "折扣: 幸福满杯",
           ],
-          deliveryPerson: `${recipientName}专属配送服务`,
-          deliveryAddress: "温馨咖啡小屋",
           userNote: keywords
             ? `${keywords}快乐！星巴克与你共享温馨时光~`
             : "享受美好时光，记得给好评哦~",
@@ -166,6 +165,7 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
             },
             { name: "美好时光", quantity: "永久" },
           ],
+          payment: "无价",
           discounts: [
             keywords ? `折扣: ${keywords}专属优惠` : "折扣: 热情不打折",
             "折扣: 活力无限",
@@ -174,18 +174,21 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
             "折扣: 快乐无限",
             "折扣: 活力满杯",
           ],
-          deliveryPerson: `${recipientName}专属配送服务`,
-          deliveryAddress: "快乐咖啡小屋",
           userNote: keywords
             ? `${keywords}快乐！瑞幸与你共创美好回忆~`
             : "享受美好时光，记得给好评哦~",
         },
       };
 
-      return (
+      const content =
         brandSpecificContent[brand as keyof typeof brandSpecificContent] ||
-        brandSpecificContent.mcdonalds
-      );
+        brandSpecificContent.mcdonalds;
+      return {
+        ...content,
+        backgroundImage,
+        leftImage,
+        rightImage,
+      };
     };
 
     // 生成内容
@@ -195,9 +198,6 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
     if (!generatedContent.title.includes("限定套餐")) {
       generatedContent.title = `#${recipientName}的${currentDate}限定套餐`;
     }
-
-    // 确保支付金额为无价
-    generatedContent.payment = "无价";
 
     const receiptData = {
       date,
@@ -210,9 +210,11 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
       products: generatedContent.products,
       payment: generatedContent.payment,
       discounts: generatedContent.discounts,
-      deliveryPerson: generatedContent.deliveryPerson,
-      deliveryAddress: generatedContent.deliveryAddress,
       userNote: generatedContent.userNote,
+      loveMessage,
+      backgroundImage,
+      leftImage,
+      rightImage,
     };
 
     return NextResponse.json(receiptData);

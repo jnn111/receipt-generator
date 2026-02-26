@@ -60,6 +60,9 @@ interface ReceiptData {
   deliveryPerson: string; // 如 "张女士送货上门服务"
   deliveryAddress: string; // 如 "我们爱的小屋"
   userNote: string; // 如 "满意请给好评"
+  backgroundImage: string; // 背景图片URL
+  leftImage: string; // 左侧图片URL
+  rightImage: string; // 右侧图片URL
 }
 
 const brandConfigs = {
@@ -99,6 +102,9 @@ export default function ReceiptPage() {
     date: "",
     recipient: "",
     loveMessage: "",
+    backgroundImage: "",
+    leftImage: "",
+    rightImage: "",
   });
   const [receiptData, setReceiptData] = useState<ReceiptData | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -191,6 +197,9 @@ export default function ReceiptPage() {
           date: formData.date,
           recipient: formData.recipient,
           loveMessage: formData.loveMessage,
+          backgroundImage: formData.backgroundImage,
+          leftImage: formData.leftImage,
+          rightImage: formData.rightImage,
           brand: selectedBrand,
         }),
       });
@@ -270,7 +279,7 @@ export default function ReceiptPage() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full flex justify-center"
+        className="w-full flex justify-center relative"
       >
         <div
           ref={receiptRef}
@@ -316,7 +325,12 @@ export default function ReceiptPage() {
           </div>
 
           {/* 编号区 - 生日数字 */}
-          <div className="text-center mb-6">
+          <div className="flex items-center justify-center mb-6">
+            <img
+              src={receiptData.leftImage || "/logos/0.png"}
+              alt="Left Decoration"
+              className="w-24 h-24 mr-4"
+            />
             <div
               className="text-6xl font-black tracking-wider"
               style={{
@@ -330,6 +344,11 @@ export default function ReceiptPage() {
             >
               {receiptData.dateNumber}
             </div>
+            <img
+              src={receiptData.rightImage || "/logos/0.png"}
+              alt="Right Decoration"
+              className="w-24 h-24 ml-4"
+            />
           </div>
 
           {/* 分隔线 */}
@@ -418,12 +437,8 @@ export default function ReceiptPage() {
           {/* 配送区 */}
           <div className="mb-7 space-y-4">
             <div className="text-xl text-slate-600 flex">
-              <span className="w-24">配送:</span>
-              <span>{receiptData.deliveryPerson}</span>
-            </div>
-            <div className="text-xl text-slate-600 flex">
-              <span className="w-24">配送地址:</span>
-              <span>{receiptData.deliveryAddress}</span>
+              <span className="w-24">收货人:</span>
+              <span>全宇宙最好的{receiptData.recipient}</span>
             </div>
             <div className="text-xl text-slate-600 flex">
               <span className="w-24">用户备注:</span>
@@ -432,25 +447,91 @@ export default function ReceiptPage() {
           </div>
 
           {/* 底部彩蛋 - 自动生成 */}
-          <div className="mt-auto pt-8">
-            {/* 生日派对装饰 */}
-            <div className="text-center mb-6">
-              <div className="text-4xl font-bold text-slate-800 mb-4">
-                🎉 HAPPY BIRTHDAY 🎉
-              </div>
-              <div className="text-3xl font-bold text-slate-700">生日快乐</div>
-            </div>
+          <div
+            className="pt-4 pb-6 relative overflow-hidden rounded-lg"
+            style={{
+              minHeight: "200px",
+            }}
+          >
+            {/* 背景图 */}
+            <div
+              className="absolute inset-0 z-0"
+              style={{
+                backgroundImage: receiptData.backgroundImage
+                  ? `url('${receiptData.backgroundImage}')`
+                  : "url('/logos/3.png')",
+                backgroundSize: "contain",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                height: "100%",
+                width: "100%",
+              }}
+            ></div>
+            {/* 内容 */}
+            <div className="relative z-10">
+              {/* 生日派对装饰 - 只有爱意文案包含生日相关内容时显示 */}
+              {receiptData.loveMessage &&
+                (receiptData.loveMessage.includes("生日") ||
+                  receiptData.loveMessage.includes("birthday") ||
+                  receiptData.loveMessage.includes("Birthday")) && (
+                  <div className="text-center mb-6">
+                    <div className="text-4xl font-bold text-slate-800 mb-4">
+                      🎉 HAPPY BIRTHDAY 🎉
+                    </div>
+                    <div className="text-3xl font-bold text-slate-700">
+                      生日快乐
+                    </div>
+                  </div>
+                )}
 
-            {/* 生日蛋糕插画 */}
-            <div className="flex justify-center items-center mb-8">
-              <div className="text-center">
-                {/* 派对元素 */}
-                <div className="flex justify-center gap-4 mb-6">
-                  <div className="text-3xl">🎈</div>
-                  <div className="text-3xl">🎁</div>
-                  <div className="text-3xl">🎊</div>
-                </div>
-              </div>
+              {/* 生日蛋糕插画 - 只有爱意文案包含生日相关内容时显示 */}
+              {receiptData.loveMessage &&
+                (receiptData.loveMessage.includes("生日") ||
+                  receiptData.loveMessage.includes("birthday") ||
+                  receiptData.loveMessage.includes("Birthday")) && (
+                  <div className="flex justify-center items-center mb-8">
+                    <div className="text-center p-4 rounded-lg relative overflow-hidden">
+                      {/* 派对元素 */}
+                      <div className="flex justify-center gap-4 mb-6">
+                        <div className="text-3xl">🎈</div>
+                        <div className="text-3xl">🎁</div>
+                        <div className="text-3xl">🎊</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              {/* 情人节装饰 - 只有爱意文案包含情人节相关内容时显示 */}
+              {receiptData.loveMessage &&
+                (receiptData.loveMessage.includes("情人节") ||
+                  receiptData.loveMessage.includes("Valentine") ||
+                  receiptData.loveMessage.includes("valentine")) && (
+                  <div className="text-center mb-6">
+                    <div className="text-4xl font-bold text-slate-800 mb-4">
+                      💖 HAPPY VALENTINE'S DAY 💖
+                    </div>
+                    <div className="text-3xl font-bold text-slate-700">
+                      情人节快乐
+                    </div>
+                  </div>
+                )}
+
+              {/* 情人节插画 - 只有爱意文案包含情人节相关内容时显示 */}
+              {receiptData.loveMessage &&
+                (receiptData.loveMessage.includes("情人节") ||
+                  receiptData.loveMessage.includes("Valentine") ||
+                  receiptData.loveMessage.includes("valentine")) && (
+                  <div className="flex justify-center items-center mb-8">
+                    <div className="text-center p-4 rounded-lg relative overflow-hidden">
+                      {/* 情人节元素 */}
+                      <div className="flex justify-center gap-4 mb-6">
+                        <div className="text-3xl">💖</div>
+                        <div className="text-3xl">🌹</div>
+                        <div className="text-3xl">💝</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
         </div>
@@ -622,6 +703,90 @@ export default function ReceiptPage() {
                     className="mt-1.5 w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500"
                     rows={4}
                   />
+                </div>
+
+                <div>
+                  <Label htmlFor="backgroundImage" className="text-base">
+                    背景图片（可选）
+                  </Label>
+                  <input
+                    type="file"
+                    id="backgroundImage"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          setFormData({
+                            ...formData,
+                            backgroundImage: event.target?.result as string,
+                          });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="mt-1.5 w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  />
+                  <p className="mt-1 text-sm text-slate-500">
+                    上传自定义背景图片，如不上传则使用默认背景
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="leftImage" className="text-base">
+                    左侧图片（可选）
+                  </Label>
+                  <input
+                    type="file"
+                    id="leftImage"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          setFormData({
+                            ...formData,
+                            leftImage: event.target?.result as string,
+                          });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="mt-1.5 w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  />
+                  <p className="mt-1 text-sm text-slate-500">
+                    上传左侧图片（建议尺寸：96x96px），如不上传则使用默认图片
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="rightImage" className="text-base">
+                    右侧图片（可选）
+                  </Label>
+                  <input
+                    type="file"
+                    id="rightImage"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          setFormData({
+                            ...formData,
+                            rightImage: event.target?.result as string,
+                          });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="mt-1.5 w-full p-3 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-500"
+                  />
+                  <p className="mt-1 text-sm text-slate-500">
+                    上传右侧图片（建议尺寸：96x96px），如不上传则使用默认图片
+                  </p>
                 </div>
               </div>
 
