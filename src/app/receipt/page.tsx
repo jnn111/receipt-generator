@@ -226,11 +226,9 @@ export default function ReceiptPage() {
           transformOrigin: "top left",
         },
         // 确保图片正确加载
-        pixelRatio: window.devicePixelRatio,
+        pixelRatio: typeof window !== 'undefined' ? window.devicePixelRatio : 1,
         cacheBust: true,
         skipFonts: false,
-        allowTaint: true,
-        useCORS: true,
       });
 
       const a = document.createElement("a");
