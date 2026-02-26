@@ -60,6 +60,7 @@ interface ReceiptData {
   deliveryPerson: string; // 如 "张女士送货上门服务"
   deliveryAddress: string; // 如 "我们爱的小屋"
   userNote: string; // 如 "满意请给好评"
+  loveMessage: string; // 爱意文案
   backgroundImage: string; // 背景图片URL
   leftImage: string; // 左侧图片URL
   rightImage: string; // 右侧图片URL
