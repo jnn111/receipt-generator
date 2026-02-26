@@ -112,10 +112,10 @@ export default function ReceiptPage() {
 
   // 当品牌切换时，自动重新生成小票
   useEffect(() => {
-    if (receiptData && formData.date && formData.recipient) {
+    if (formData.date && formData.recipient) {
       generateReceipt();
     }
-  }, [selectedBrand]);
+  }, [selectedBrand, formData.date, formData.recipient]);
 
   // 上传自定义Logo
   const handleLogoUpload = async (
