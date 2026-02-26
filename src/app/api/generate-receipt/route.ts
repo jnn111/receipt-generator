@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -7,13 +7,13 @@ export async function POST(request: NextRequest) {
 
     // 提取日期数字（月+日）
     const dateObj = new Date(date);
-    const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-    const day = dateObj.getDate().toString().padStart(2, '0');
+    const month = (dateObj.getMonth() + 1).toString().padStart(2, "0");
+    const day = dateObj.getDate().toString().padStart(2, "0");
     const dateNumber = `${month}${day}`;
 
     // 生成订单号和时间（使用用户填写的日期）
     const orderNumber = Math.floor(Date.now() / 1000).toString();
-    const orderTime = `${dateObj.getFullYear()}.${(dateObj.getMonth() + 1).toString().padStart(2, '0')}.${dateObj.getDate().toString().padStart(2, '0')} ${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
+    const orderTime = `${dateObj.getFullYear()}.${(dateObj.getMonth() + 1).toString().padStart(2, "0")}.${dateObj.getDate().toString().padStart(2, "0")} ${dateObj.getHours().toString().padStart(2, "0")}:${dateObj.getMinutes().toString().padStart(2, "0")}`;
 
     // 使用 LLM 生成小票内容
     const llmPrompt = `
@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
 信息：
 - 日期：${date}（日期数字：${dateNumber}）
 - 送给谁：${recipient}
-- 品牌：${brand === 'mcdonalds' ? '麦当劳' : brand === 'starbucks' ? '星巴克' : '瑞幸'}
-${loveMessage ? `- 爱意文案：${loveMessage}` : ''}
+- 品牌：${brand === "mcdonalds" ? "麦当劳" : brand === "starbucks" ? "星巴克" : "瑞幸"}
+${loveMessage ? `- 爱意文案：${loveMessage}` : ""}
 
 请生成以下内容（全部为中文）：
 1. title: 标题，格式：#${recipient}的[日期]限定套餐，其中日期使用当前日期（YYYY.MM.DD），并根据爱意文案的主题和情感添加适当的描述，必须包含"限定套餐"四个字
@@ -66,132 +66,138 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ''}
 `;
 
     let generatedContent;
-    
-    // 直接使用默认内容，避免COZE SDK调用超时
-    console.log('使用默认内容');
-    
-    // 默认内容
-    const recipientName = recipient || '亲爱的';
-    let defaultContents = {
-      mcdonalds: {
-        title: `#${recipientName}的限定套餐`,
-        remark: `备注: 麦当当 快乐每一天`,
-        products: [
-          { name: `${recipientName}的限定套餐`, quantity: '1' },
-          { name: '对你的爱', quantity: '加倍' },
-          { name: '你的财富', quantity: '无限加倍' },
-          { name: '快乐时光', quantity: '永久' }
-        ],
-        payment: '无价',
-        discounts: [
-          '折扣: 对你的爱不打折',
-          '折扣: 真爱无价',
-          '折扣: 爱加倍',
-          '折扣: 幸福永久',
-          '折扣: 快乐无限'
-        ],
-        deliveryPerson: `${recipientName}送货上门服务`,
-        deliveryAddress: '我们爱的小屋',
-        userNote: '满意请给好评，记得五星哦~'
-      },
-      starbucks: {
-        title: `#${recipientName}的限定套餐`,
-        remark: `备注: 星巴克 一杯温暖一生`,
-        products: [
-          { name: `${recipientName}的限定套餐`, quantity: '1' },
-          { name: '醇香咖啡', quantity: '无限续杯' },
-          { name: '甜蜜时光', quantity: '加倍' },
-          { name: '幸福味道', quantity: '永久' }
-        ],
-        payment: '无价',
-        discounts: [
-          '折扣: 爱意不打折',
-          '折扣: 温暖无限',
-          '折扣: 真爱无价',
-          '折扣: 甜蜜永久',
-          '折扣: 温馨时光'
-        ],
-        deliveryPerson: `${recipientName}送货上门服务`,
-        deliveryAddress: '温馨咖啡小屋',
-        userNote: '享受美好时光，记得给好评哦~'
-      },
-      luckin: {
-        title: `#${recipientName}的限定套餐`,
-        remark: `备注: 瑞幸 快乐每一天`,
-        products: [
-          { name: `${recipientName}的限定套餐`, quantity: '1' },
-          { name: '冰爽咖啡', quantity: '无限续杯' },
-          { name: '激情活力', quantity: '加倍' },
-          { name: '美好时光', quantity: '永久' }
-        ],
-        payment: '无价',
-        discounts: [
-          '折扣: 热情不打折',
-          '折扣: 活力无限',
-          '折扣: 真爱无价',
-          '折扣: 激情永久',
-          '折扣: 快乐无限'
-        ],
-        deliveryPerson: `${recipientName}送货上门服务`,
-        deliveryAddress: '快乐咖啡小屋',
-        userNote: '享受美好时光，记得给好评哦~'
-      }
+
+    // 生成当前日期字符串 (YYYY.MM.DD)
+    const currentDate = `${dateObj.getFullYear()}.${(dateObj.getMonth() + 1).toString().padStart(2, "0")}.${dateObj.getDate().toString().padStart(2, "0")}`;
+    const recipientName = recipient || "亲爱的";
+
+    // 基于用户输入和品牌生成AI爱意文案
+    const generateAIContent = (brand: string, loveMessage: string) => {
+      const brandName =
+        brand === "mcdonalds"
+          ? "麦当劳"
+          : brand === "starbucks"
+            ? "星巴克"
+            : "瑞幸";
+
+      // 分析爱意文案，提取关键词
+      let keywords = "";
+      if (loveMessage.includes("十周年")) keywords = "十周年";
+      else if (loveMessage.includes("结婚")) keywords = "结婚";
+      else if (loveMessage.includes("纪念日")) keywords = "纪念日";
+      else if (loveMessage.includes("生日")) keywords = "生日";
+      else if (loveMessage.includes("爱")) keywords = "爱";
+
+      // 根据品牌和关键词生成内容
+      const brandSpecificContent = {
+        mcdonalds: {
+          title: keywords
+            ? `#${recipientName}的${currentDate}${keywords}限定套餐`
+            : `#${recipientName}的${currentDate}限定套餐`,
+          remark: keywords
+            ? `备注: ${recipientName}的${keywords}特别祝福，麦当当为你送上最甜蜜的爱`
+            : `备注: 麦当当 快乐每一天`,
+          products: [
+            { name: `${recipientName}的限定套餐`, quantity: "1" },
+            {
+              name: keywords ? `${keywords}的爱` : "对你的爱",
+              quantity: "加倍",
+            },
+            { name: "永恒的幸福", quantity: "无限加倍" },
+            { name: "快乐时光", quantity: "永久" },
+          ],
+          discounts: [
+            keywords ? `折扣: ${keywords}专属优惠` : "折扣: 对你的爱不打折",
+            "折扣: 真爱无价",
+            "折扣: 爱加倍",
+            "折扣: 幸福永久",
+            "折扣: 快乐无限",
+            "折扣: 甜蜜时光",
+          ],
+          deliveryPerson: `${recipientName}专属配送服务`,
+          deliveryAddress: "我们爱的小屋",
+          userNote: keywords
+            ? `${keywords}快乐！麦当当与你一起分享每一个美好时刻~`
+            : "满意请给好评，记得五星哦~",
+        },
+        starbucks: {
+          title: keywords
+            ? `#${recipientName}的${currentDate}${keywords}限定套餐`
+            : `#${recipientName}的${currentDate}限定套餐`,
+          remark: keywords
+            ? `备注: ${recipientName}的${keywords}特别祝福，星巴克为你送上温暖的爱`
+            : `备注: 星巴克 一杯温暖一生`,
+          products: [
+            { name: `${recipientName}的限定套餐`, quantity: "1" },
+            { name: "醇香咖啡", quantity: "无限续杯" },
+            {
+              name: keywords ? `${keywords}的甜蜜` : "甜蜜时光",
+              quantity: "加倍",
+            },
+            { name: "幸福味道", quantity: "永久" },
+          ],
+          discounts: [
+            keywords ? `折扣: ${keywords}专属优惠` : "折扣: 爱意不打折",
+            "折扣: 温暖无限",
+            "折扣: 真爱无价",
+            "折扣: 甜蜜永久",
+            "折扣: 温馨时光",
+            "折扣: 幸福满杯",
+          ],
+          deliveryPerson: `${recipientName}专属配送服务`,
+          deliveryAddress: "温馨咖啡小屋",
+          userNote: keywords
+            ? `${keywords}快乐！星巴克与你共享温馨时光~`
+            : "享受美好时光，记得给好评哦~",
+        },
+        luckin: {
+          title: keywords
+            ? `#${recipientName}的${currentDate}${keywords}限定套餐`
+            : `#${recipientName}的${currentDate}限定套餐`,
+          remark: keywords
+            ? `备注: ${recipientName}的${keywords}特别祝福，瑞幸为你送上活力的爱`
+            : `备注: 瑞幸 快乐每一天`,
+          products: [
+            { name: `${recipientName}的限定套餐`, quantity: "1" },
+            { name: "冰爽咖啡", quantity: "无限续杯" },
+            {
+              name: keywords ? `${keywords}的激情` : "激情活力",
+              quantity: "加倍",
+            },
+            { name: "美好时光", quantity: "永久" },
+          ],
+          discounts: [
+            keywords ? `折扣: ${keywords}专属优惠` : "折扣: 热情不打折",
+            "折扣: 活力无限",
+            "折扣: 真爱无价",
+            "折扣: 激情永久",
+            "折扣: 快乐无限",
+            "折扣: 活力满杯",
+          ],
+          deliveryPerson: `${recipientName}专属配送服务`,
+          deliveryAddress: "快乐咖啡小屋",
+          userNote: keywords
+            ? `${keywords}快乐！瑞幸与你共创美好回忆~`
+            : "享受美好时光，记得给好评哦~",
+        },
+      };
+
+      return (
+        brandSpecificContent[brand as keyof typeof brandSpecificContent] ||
+        brandSpecificContent.mcdonalds
+      );
     };
 
-    // 如果有爱意文案，修改默认内容以包含爱意文案的元素
-    if (loveMessage) {
-      const brandKey = brand as keyof typeof defaultContents;
-      const brandConfig = defaultContents[brandKey] || defaultContents.mcdonalds;
-      
-      // 分析爱意文案，提取关键词
-      let keywords = '';
-      if (loveMessage.includes('十周年')) keywords = '十周年';
-      else if (loveMessage.includes('结婚')) keywords = '结婚';
-      else if (loveMessage.includes('纪念日')) keywords = '纪念日';
-      else if (loveMessage.includes('爱')) keywords = '爱';
-      
-      // 生成当前日期字符串 (YYYY.MM.DD)
-      const currentDate = `${dateObj.getFullYear()}.${(dateObj.getMonth() + 1).toString().padStart(2, '0')}.${dateObj.getDate().toString().padStart(2, '0')}`;
-      
-      // 基于关键词和日期创造温馨的内容
-      defaultContents[brandKey] = {
-        ...brandConfig,
-        title: keywords ? `#${recipientName}的${currentDate}${keywords}限定套餐` : `#${recipientName}的${currentDate}限定套餐`,
-        remark: keywords ? `备注: ${recipientName}的${keywords}特别祝福，愿我们的爱永远甜蜜` : brandConfig.remark,
-        products: [
-          { name: `${recipientName}的限定套餐`, quantity: '1' },
-          { name: `${keywords || '对你的爱'}`, quantity: '加倍' },
-          { name: '永恒的幸福', quantity: '无限加倍' },
-          { name: '快乐时光', quantity: '永久' }
-        ],
-        discounts: [
-          keywords ? `折扣: ${keywords}专属优惠` : '折扣: 对你的爱不打折',
-          '折扣: 真爱无价',
-          '折扣: 爱加倍',
-          '折扣: 幸福永久',
-          '折扣: 快乐无限'
-        ],
-        userNote: keywords ? `${keywords}快乐！愿我们的爱永远如初~` : brandConfig.userNote
-      };
-    } else {
-      // 没有爱意文案时，也使用日期格式的标题
-      const brandKey = brand as keyof typeof defaultContents;
-      const brandConfig = defaultContents[brandKey] || defaultContents.mcdonalds;
-      const currentDate = `${dateObj.getFullYear()}.${(dateObj.getMonth() + 1).toString().padStart(2, '0')}.${dateObj.getDate().toString().padStart(2, '0')}`;
-      
-      defaultContents[brandKey] = {
-        ...brandConfig,
-        title: `#${recipientName}的${currentDate}限定套餐`,
-        products: [
-          { name: `${recipientName}的限定套餐`, quantity: '1' },
-          { name: '对你的爱', quantity: '加倍' },
-          { name: '你的财富', quantity: '无限加倍' },
-          { name: '快乐时光', quantity: '永久' }
-        ]
-      };
+    // 生成内容
+    let generatedContent = generateAIContent(brand, loveMessage || "");
+
+    // 确保标题包含限定套餐
+    if (!generatedContent.title.includes("限定套餐")) {
+      generatedContent.title = `#${recipientName}的${currentDate}限定套餐`;
     }
 
-    generatedContent = defaultContents[brand as keyof typeof defaultContents] || defaultContents.mcdonalds;
+    // 确保支付金额为无价
+    generatedContent.payment = "无价";
 
     const receiptData = {
       date,
@@ -211,10 +217,7 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ''}
 
     return NextResponse.json(receiptData);
   } catch (error) {
-    console.error('生成小票失败:', error);
-    return NextResponse.json(
-      { error: '生成小票失败' },
-      { status: 500 }
-    );
+    console.error("生成小票失败:", error);
+    return NextResponse.json({ error: "生成小票失败" }, { status: 500 });
   }
 }
