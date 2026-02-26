@@ -86,7 +86,9 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ''}
         discounts: [
           '折扣: 对你的爱不打折',
           '折扣: 真爱无价',
-          '折扣: 爱加倍'
+          '折扣: 爱加倍',
+          '折扣: 幸福永久',
+          '折扣: 快乐无限'
         ],
         deliveryPerson: `${recipientName}送货上门服务`,
         deliveryAddress: '我们爱的小屋',
@@ -105,7 +107,9 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ''}
         discounts: [
           '折扣: 爱意不打折',
           '折扣: 温暖无限',
-          '折扣: 真爱无价'
+          '折扣: 真爱无价',
+          '折扣: 甜蜜永久',
+          '折扣: 温馨时光'
         ],
         deliveryPerson: `${recipientName}送货上门服务`,
         deliveryAddress: '温馨咖啡小屋',
@@ -124,7 +128,9 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ''}
         discounts: [
           '折扣: 热情不打折',
           '折扣: 活力无限',
-          '折扣: 真爱无价'
+          '折扣: 真爱无价',
+          '折扣: 激情永久',
+          '折扣: 快乐无限'
         ],
         deliveryPerson: `${recipientName}送货上门服务`,
         deliveryAddress: '快乐咖啡小屋',
@@ -161,7 +167,9 @@ ${loveMessage ? `- 爱意文案：${loveMessage}` : ''}
         discounts: [
           keywords ? `折扣: ${keywords}专属优惠` : '折扣: 对你的爱不打折',
           '折扣: 真爱无价',
-          '折扣: 爱加倍'
+          '折扣: 爱加倍',
+          '折扣: 幸福永久',
+          '折扣: 快乐无限'
         ],
         userNote: keywords ? `${keywords}快乐！愿我们的爱永远如初~` : brandConfig.userNote
       };
