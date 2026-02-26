@@ -225,6 +225,12 @@ export default function ReceiptPage() {
           transform: "scale(1)",
           transformOrigin: "top left",
         },
+        // 确保图片正确加载
+        pixelRatio: window.devicePixelRatio,
+        cacheBust: true,
+        skipFonts: false,
+        allowTaint: true,
+        useCORS: true,
       });
 
       const a = document.createElement("a");
